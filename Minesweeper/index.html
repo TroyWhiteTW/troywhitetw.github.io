@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>踩地雷</title>
+    <style>
+        #div1 {
+            width: 400px;
+            height: 400px;
+            background: yellowgreen;
+            position: relative;
+        }
+
+        #div1 div {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: black 1px solid;
+        }
+    </style>
+    <script>
+        const columns = 8;
+        const allCells = columns * columns;
+        const bombCells = 10;
+
+        function createBombArray() {
+            let originalArray = [];
+            let returnArray = [bombCells];
+
+            for (let i = 0; i < allCells; i++) {
+                originalArray[i] = i;
+            }
+            originalArray.sort(() => 0.5 - Math.random());
+
+            for (let i = 0; i < bombCells; i++) {
+                returnArray[i] = originalArray[i];
+            }
+
+            return returnArray;
+        }
+
+        function showSafeArea(position) {
+            let aChildDiv = document.getElementById('div1').getElementsByTagName('div');
+
+            aChildDiv[position].style.background = 'gray';
+
+            if (typeof aChildDiv[position - columns - 1] !== 'undefined' &&
+                aChildDiv[position - columns - 1].position % columns !== columns - 1) {
+
+                if (aChildDiv[position - columns - 1].countBombs === 0) {
+                    aChildDiv[position - columns - 1].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position - columns - 1].position);
+                } else {
+                    if (!aChildDiv[position - columns - 1].isBomb &&
+                        aChildDiv[position - columns - 1].countBombs > 0) {
+                        aChildDiv[position - columns - 1].innerHTML = aChildDiv[position - columns - 1].countBombs + '';
+                        aChildDiv[position - columns - 1].style.background = 'gray';
+                    }
+                }
+            }
+
+            if (typeof aChildDiv[position - columns] !== 'undefined') {
+                if (aChildDiv[position - columns].countBombs === 0) {
+                    aChildDiv[position - columns].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position - columns].position);
+                } else {
+                    if (!aChildDiv[position - columns].isBomb &&
+                        aChildDiv[position - columns].countBombs > 0) {
+                        aChildDiv[position - columns].innerHTML = aChildDiv[position - columns].countBombs + '';
+                        aChildDiv[position - columns].style.background = 'gray';
+                    }
+                }
+            }
+
+            if (typeof aChildDiv[position - columns + 1] !== 'undefined' &&
+                aChildDiv[position - columns + 1].position % columns !== 0) {
+
+                if (aChildDiv[position - columns + 1].countBombs === 0) {
+                    aChildDiv[position - columns + 1].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position - columns + 1].position);
+                } else {
+                    if (!aChildDiv[position - columns + 1].isBomb &&
+                        aChildDiv[position - columns + 1].countBombs > 0) {
+                        aChildDiv[position - columns + 1].innerHTML = aChildDiv[position - columns + 1].countBombs + '';
+                        aChildDiv[position - columns + 1].style.background = 'gray';
+                    }
+                }
+            }
+
+            if (typeof aChildDiv[position - 1] !== 'undefined' &&
+                aChildDiv[position - 1].position % columns !== columns - 1) {
+
+                if (aChildDiv[position - 1].countBombs === 0) {
+                    aChildDiv[position - 1].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position - 1].position);
+                } else {
+                    if (!aChildDiv[position - 1].isBomb &&
+                        aChildDiv[position - 1].countBombs > 0) {
+                        aChildDiv[position - 1].innerHTML = aChildDiv[position - 1].countBombs + '';
+                        aChildDiv[position - 1].style.background = 'gray';
+                    }
+                }
+            }
+
+            if (typeof aChildDiv[position + 1] !== 'undefined' &&
+                aChildDiv[position + 1].position % columns !== 0) {
+
+                if (aChildDiv[position + 1].countBombs === 0) {
+                    aChildDiv[position + 1].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position + 1].position);
+                } else {
+                    if (!aChildDiv[position + 1].isBomb &&
+                        aChildDiv[position + 1].countBombs > 0) {
+                        aChildDiv[position + 1].innerHTML = aChildDiv[position + 1].countBombs + '';
+                        aChildDiv[position + 1].style.background = 'gray';
+                    }
+                }
+            }
+
+            if (typeof aChildDiv[position + columns - 1] !== 'undefined' &&
+                aChildDiv[position + columns - 1].position % columns !== columns - 1) {
+
+                if (aChildDiv[position + columns - 1].countBombs === 0) {
+                    aChildDiv[position + columns - 1].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position + columns - 1].position);
+                } else {
+                    if (!aChildDiv[position + columns - 1].isBomb &&
+                        aChildDiv[position + columns - 1].countBombs > 0) {
+                        aChildDiv[position + columns - 1].innerHTML = aChildDiv[position + columns - 1].countBombs + '';
+                        aChildDiv[position + columns - 1].style.background = 'gray';
+                    }
+                }
+            }
+
+            if (typeof aChildDiv[position + columns] !== 'undefined') {
+                if (aChildDiv[position + columns].countBombs === 0) {
+                    aChildDiv[position + columns].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position + columns].position);
+                } else {
+                    if (!aChildDiv[position + columns].isBomb &&
+                        aChildDiv[position + columns].countBombs > 0) {
+                        aChildDiv[position + columns].innerHTML = aChildDiv[position + columns].countBombs + '';
+                        aChildDiv[position + columns].style.background = 'gray';
+                    }
+                }
+            }
+
+            if (typeof aChildDiv[position + columns + 1] !== 'undefined' &&
+                aChildDiv[position + columns + 1].position % columns !== 0) {
+
+                if (aChildDiv[position + columns + 1].countBombs === 0) {
+                    aChildDiv[position + columns + 1].countBombs = -1;
+
+                    showSafeArea(aChildDiv[position + columns + 1].position);
+                } else {
+                    if (!aChildDiv[position + columns + 1].isBomb &&
+                        aChildDiv[position + columns + 1].countBombs > 0) {
+                        aChildDiv[position + columns + 1].innerHTML = aChildDiv[position + columns + 1].countBombs + '';
+                        aChildDiv[position + columns + 1].style.background = 'gray';
+                    }
+                }
+            }
+        }
+
+        function isWinGame() {
+            let aChildDiv = document.getElementById('div1').getElementsByTagName('div');
+            let iFindBomb = 0;
+
+            for (let i = 0; i < allCells; i++) {
+                if (aChildDiv[i].isBomb && aChildDiv[i].markBomb) {
+                    iFindBomb++;
+                }
+            }
+
+            if (iFindBomb === bombCells) {
+                for (let i = 0; i < allCells; i++) {
+                    aChildDiv[i].removeEventListener('click', cellClickListener);
+                    aChildDiv[i].removeEventListener('mouseup', rightClickListener);
+                }
+                alert('you win!!');
+            }
+        }
+
+        function cellClickListener() {
+            if (this.isBomb) {
+                let aChildDiv = document.getElementById('div1').getElementsByTagName('div');
+
+                for (let i = 0; i < allCells; i++) {
+                    if (aChildDiv[i].isBomb) {
+                        aChildDiv[i].style.background = 'red';
+                    } else {
+                        if (aChildDiv[i].countBombs > 0) {
+                            aChildDiv[i].innerHTML = aChildDiv[i].countBombs + '';
+                        }
+                    }
+                    aChildDiv[i].removeEventListener('click', cellClickListener);
+                    aChildDiv[i].removeEventListener('mouseup', rightClickListener);
+                }
+
+                alert('你踩到炸彈了！');
+            } else {
+                if (this.countBombs > 0) {
+                    this.innerHTML = this.countBombs + '';
+                    this.style.background = 'gray';
+                }
+
+                if (this.countBombs === 0) {
+                    showSafeArea(this.position);
+                }
+
+                isWinGame();
+            }
+        }
+
+        function rightClickListener(ev) {
+            if (!ev) ev = window.event;
+            if (ev.button === 2) {
+                switch (getComputedStyle(this, false).backgroundColor) {
+                    case 'rgb(255, 255, 0)':
+                        this.style.backgroundColor = 'blue';
+                        this.markBomb = true;
+                        break;
+                    case 'rgb(0, 0, 255)':
+                        this.style.backgroundColor = 'yellow';
+                        this.markBomb = false;
+                        break;
+                }
+
+                isWinGame();
+            }
+        }
+
+        window.onload = () => {
+            let oDiv = document.getElementById('div1');
+
+            oDiv.oncontextmenu = ev => false;
+
+            for (let i = 0; i < allCells; i++) {
+                let oChildDiv = document.createElement('div');
+
+                oChildDiv.style.left = Math.floor(i % columns) * 50 + 'px';
+                oChildDiv.style.top = Math.floor(i / columns) * 50 + 'px';
+                oChildDiv.style.backgroundColor = 'yellow';
+                oChildDiv.position = i;
+                oChildDiv.isBomb = false;
+                oChildDiv.markBomb = false;
+                oChildDiv.addEventListener('click', cellClickListener);
+                oChildDiv.addEventListener('mouseup', rightClickListener);
+
+                oDiv.appendChild(oChildDiv);
+            }
+
+            let aBomb = createBombArray();
+            let aChildDiv = oDiv.getElementsByTagName('div');
+
+            for (let i = 0; i < aBomb.length; i++) {
+                aChildDiv[aBomb[i]].isBomb = true;
+            }
+
+            for (let i = 0; i < allCells; i++) {
+                if (!aChildDiv[i].isBomb) {
+                    let countBomb = 0;
+
+                    if (i % columns !== 0 && i / columns !== 0) {
+                        if (typeof aChildDiv[i - columns - 1] !== 'undefined' &&
+                            aChildDiv[i - columns - 1].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+
+                    if (i / columns !== 0) {
+                        if (typeof aChildDiv[i - columns] !== 'undefined' &&
+                            aChildDiv[i - columns].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+
+                    if (i % columns !== columns - 1 && i / columns !== 0) {
+                        if (typeof aChildDiv[i - columns + 1] !== 'undefined' &&
+                            aChildDiv[i - columns + 1].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+
+                    if (i % columns !== 0) {
+                        if (typeof aChildDiv[i - 1] !== 'undefined' &&
+                            aChildDiv[i - 1].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+                    if (i % columns !== columns - 1) {
+                        if (typeof aChildDiv[i + 1] !== 'undefined' &&
+                            aChildDiv[i + 1].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+
+                    if (i % columns !== 0 && i / columns !== columns - 1) {
+                        if (typeof aChildDiv[i + columns - 1] !== 'undefined' &&
+                            aChildDiv[i + columns - 1].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+
+                    if (i / columns !== columns - 1) {
+                        if (typeof aChildDiv[i + columns] !== 'undefined' &&
+                            aChildDiv[i + columns].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+
+                    if (i % columns !== columns - 1 && i / columns !== columns - 1) {
+                        if (typeof aChildDiv[i + columns + 1] !== 'undefined' &&
+                            aChildDiv[i + columns + 1].isBomb === true) {
+                            countBomb++;
+                        }
+                    }
+
+                    aChildDiv[i].countBombs = countBomb;
+                }
+            }
+        };
+    </script>
+</head>
+<body>
+<div id="div1"></div>
+</body>
+</html>
