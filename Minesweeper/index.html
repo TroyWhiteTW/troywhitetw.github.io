@@ -55,6 +55,8 @@
         let aBombs;
         let aCells;
 
+        let timer = null;
+
         function createBombsArray(columns, rows, bombs) {
             const ALL_CELLS = columns * rows;
 
@@ -140,7 +142,7 @@
                 oDivs[aBombs[i]].style.backgroundColor = 'black';
             }
 
-            // TODO: 計時器
+            clearInterval(timer);
         }
 
         function showCells(i, j) {
@@ -330,14 +332,18 @@
             }
         }
 
-        function renderView() {
-
-        }
-
-        function initGame() {
+        function initGame(startAndCleanBombs = true) {
             // 建立炸彈陣列
-            aBombs = createBombsArray(columns, rows, bombs);
-            console.log(aBombs);
+            if (startAndCleanBombs) {
+                aBombs = createBombsArray(columns, rows, bombs);
+                console.log(aBombs);
+            }
+
+            // 重置計時器
+            clearInterval(timer);
+            timer = null;
+            let oSpan = document.getElementById('spanTime');
+            oSpan.innerHTML = '時間(s)：0';
 
             // 建立格子陣列
             aCells = [];
@@ -384,6 +390,10 @@
                         if (!ev) ev = window.event;
 
                         if (ev.button === 0) {
+                            if (timer === null) {
+                                startMove();
+                            }
+
                             showCells(i, j);
 
                             if (aCells[i][j].status !== -1) {
@@ -392,6 +402,10 @@
                         }
 
                         if (ev.button === 2) {
+                            if (timer === null) {
+                                startMove();
+                            }
+
                             if (aCells[i][j].status !== -1) {
                                 aCells[i][j].rightClick(() => {
                                     oChildDiv.style.backgroundColor = aCells[i][j].backgroundColor;
@@ -407,9 +421,15 @@
             }
         }
 
-        function reGame() {
-            // TODO: re game
+        function startMove() {
+            let oSpan = document.getElementById('spanTime');
+            let passTime = 0;
 
+            clearInterval(timer);
+            timer = setInterval(() => {
+                passTime++;
+                oSpan.innerHTML = '時間(s)：' + passTime;
+            }, 1000);
         }
 
         window.onload = () => {
@@ -423,7 +443,7 @@
                             rows = 8;
                             bombs = 10;
 
-                            initGame();
+                            initGame(true);
 
                             break;
                         case 'inputMid':
@@ -431,7 +451,7 @@
                             rows = 16;
                             bombs = 40;
 
-                            initGame();
+                            initGame(true);
 
                             break;
                         case 'inputHard':
@@ -439,18 +459,16 @@
                             rows = 16;
                             bombs = 99;
 
-                            initGame();
+                            initGame(true);
 
                             break;
                         case 'inputClean':
-                            reGame();
+                            initGame(false);
 
                             break;
                     }
                 });
             }
-
-
         };
     </script>
 </head>
@@ -459,6 +477,8 @@
 <input id="inputMid" type="button" value="中級"/>
 <input id="inputHard" type="button" value="高級"/>
 <input id="inputClean" type="button" value="清除"/>
+
+<span id="spanTime">時間(s)：0</span>
 
 <hr/>
 
