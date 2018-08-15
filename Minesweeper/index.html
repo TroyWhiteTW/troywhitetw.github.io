@@ -40,9 +40,9 @@
                         this.tag = 0;
                         this.backgroundColor = 'yellow';
                     }
-                }
 
-                changeView();
+                    changeView();
+                }
             }
         }
 
@@ -315,17 +315,28 @@
         }
 
         function isWin() {
-            let findBombs = 0;
+            let temp = 0;
 
             for (let i = 0; i < aCells.length; i++) {
                 for (let j = 0; j < aCells[i].length; j++) {
-                    if (aCells[i][j].isBomb && aCells[i][j].tag === 1) {
-                        findBombs++;
+                    if (aCells[i][j].isBomb) {
+
+                        if (aCells[i][j].tag === 1) {
+                            temp++;
+                        }
+
+                    } else {
+
+                        if (aCells[i][j].tag === 0) {
+                            temp++;
+                        }
+
                     }
                 }
             }
 
-            if (findBombs === bombs) {
+            console.log(temp);
+            if (temp === columns * rows) {
                 alert('YOU WIN!!');
 
                 endGamePauseClick();
