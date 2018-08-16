@@ -4,6 +4,29 @@
     <meta charset="UTF-8">
     <title>踩地雷 2</title>
 
+    <style>
+        #div2 {
+            width: 200px;
+            height: 200px;
+            background: lightgray;
+            position: absolute;
+            left: -220px;
+            top: 300px;
+            padding: 10px;
+        }
+
+        #div2 span {
+            width: 20px;
+            height: 80px;
+            line-height: 20px;
+            right: -20px;
+            top: 60px;
+            background: pink;
+            position: absolute;
+        }
+    </style>
+
+    <script src="ajax.js"></script>
     <script>
         class Cells {
             constructor(x, y) {
@@ -56,6 +79,7 @@
         let aCells;
 
         let timer = null;
+        let AutoSideBarTimer = null;
 
         function createBombsArray(columns, rows, bombs) {
             const ALL_CELLS = columns * rows;
@@ -75,66 +99,70 @@
             return returnArray;
         }
 
-        function countBombs() {
+        function foreachAllCells(fCallback) {
             for (let i = 0; i < aCells.length; i++) {
                 for (let j = 0; j < aCells[i].length; j++) {
-                    let bombs = 0;
-
-                    if (typeof aCells[i - 1] !== 'undefined') {
-                        if (typeof aCells[i - 1][j - 1] !== 'undefined' &&
-                            aCells[i - 1][j - 1].isBomb) {
-                            bombs++;
-                        }
-
-                        if (typeof aCells[i - 1][j] !== 'undefined' &&
-                            aCells[i - 1][j].isBomb) {
-                            bombs++;
-                        }
-
-                        if (typeof aCells[i - 1][j + 1] !== 'undefined' &&
-                            aCells[i - 1][j + 1].isBomb) {
-                            bombs++;
-                        }
-                    }
-
-                    if (typeof aCells[i][j - 1] !== 'undefined' &&
-                        aCells[i][j - 1].isBomb) {
-                        bombs++;
-                    }
-
-                    if (typeof aCells[i][j + 1] !== 'undefined' &&
-                        aCells[i][j + 1].isBomb) {
-                        bombs++;
-                    }
-
-                    if (typeof aCells[i + 1] !== 'undefined') {
-                        if (typeof aCells[i + 1][j - 1] !== 'undefined' &&
-                            aCells[i + 1][j - 1].isBomb) {
-                            bombs++;
-                        }
-
-                        if (typeof aCells[i + 1][j] !== 'undefined' &&
-                            aCells[i + 1][j].isBomb) {
-                            bombs++;
-                        }
-
-                        if (typeof aCells[i + 1][j + 1] !== 'undefined' &&
-                            aCells[i + 1][j + 1].isBomb) {
-                            bombs++;
-                        }
-                    }
-
-                    aCells[i][j].countBombs = bombs;
+                    fCallback(i, j);
                 }
             }
         }
 
-        function endGamePauseClick() {
-            for (let i = 0; i < aCells.length; i++) {
-                for (let j = 0; j < aCells[i].length; j++) {
-                    aCells[i][j].status = -1;
+        function countBombs() {
+            foreachAllCells((i, j) => {
+                let bombs = 0;
+
+                if (typeof aCells[i - 1] !== 'undefined') {
+                    if (typeof aCells[i - 1][j - 1] !== 'undefined' &&
+                        aCells[i - 1][j - 1].isBomb) {
+                        bombs++;
+                    }
+
+                    if (typeof aCells[i - 1][j] !== 'undefined' &&
+                        aCells[i - 1][j].isBomb) {
+                        bombs++;
+                    }
+
+                    if (typeof aCells[i - 1][j + 1] !== 'undefined' &&
+                        aCells[i - 1][j + 1].isBomb) {
+                        bombs++;
+                    }
                 }
-            }
+
+                if (typeof aCells[i][j - 1] !== 'undefined' &&
+                    aCells[i][j - 1].isBomb) {
+                    bombs++;
+                }
+
+                if (typeof aCells[i][j + 1] !== 'undefined' &&
+                    aCells[i][j + 1].isBomb) {
+                    bombs++;
+                }
+
+                if (typeof aCells[i + 1] !== 'undefined') {
+                    if (typeof aCells[i + 1][j - 1] !== 'undefined' &&
+                        aCells[i + 1][j - 1].isBomb) {
+                        bombs++;
+                    }
+
+                    if (typeof aCells[i + 1][j] !== 'undefined' &&
+                        aCells[i + 1][j].isBomb) {
+                        bombs++;
+                    }
+
+                    if (typeof aCells[i + 1][j + 1] !== 'undefined' &&
+                        aCells[i + 1][j + 1].isBomb) {
+                        bombs++;
+                    }
+                }
+
+                aCells[i][j].countBombs = bombs;
+            });
+        }
+
+        function endGamePauseClick() {
+            foreachAllCells((i, j) => {
+                aCells[i][j].status = -1;
+            });
 
             let oDivs = document.getElementById('div1').getElementsByTagName('div');
 
@@ -264,9 +292,7 @@
                             }
                         }
                     }
-
                 }
-
             } else {
                 if (typeof aCells[i - 1] !== 'undefined') {
                     if (typeof aCells[i - 1][j - 1] !== 'undefined' &&
@@ -317,29 +343,37 @@
         function isWin() {
             let temp = 0;
 
-            for (let i = 0; i < aCells.length; i++) {
-                for (let j = 0; j < aCells[i].length; j++) {
-                    if (aCells[i][j].isBomb) {
-
-                        if (aCells[i][j].tag === 1) {
-                            temp++;
-                        }
-
-                    } else {
-
-                        if (aCells[i][j].tag === 0) {
-                            temp++;
-                        }
-
+            foreachAllCells((i, j) => {
+                if (aCells[i][j].isBomb) {
+                    if (aCells[i][j].tag === 1) {
+                        temp++;
+                    }
+                } else {
+                    if (aCells[i][j].tag === 0) {
+                        temp++;
                     }
                 }
-            }
+            });
 
             console.log(temp);
             if (temp === columns * rows) {
                 alert('YOU WIN!!');
 
                 endGamePauseClick();
+
+                ajax(
+                    'GET',
+                    './test.php',
+                    {test: "test", troy: "troy"},
+                    response => {
+                        console.log(response);
+                        console.log('遊戲時間已記錄！');
+                    },
+                    status => {
+                        console.log(status);
+                        console.log('遊戲時間紀錄失敗！');
+                    }
+                );
             }
         }
 
@@ -376,63 +410,62 @@
 
             // 把遊戲畫上網頁
             let oDiv = document.getElementById('div1');
+
             oDiv.innerHTML = '';
             oDiv.oncontextmenu = ev => false;
             oDiv.onselectstart = ev => false;
 
             let iAlignLeft = (window.innerWidth - (CELL_WIDTH * columns)) / 2;
 
-            for (let i = 0; i < aCells.length; i++) {
-                for (let j = 0; j < aCells[i].length; j++) {
-                    let oChildDiv = document.createElement('div');
+            foreachAllCells((i, j) => {
+                let oChildDiv = document.createElement('div');
 
-                    // 初始格子的樣式
-                    oChildDiv.style.left = iAlignLeft + aCells[i][j].blockY * CELL_WIDTH + 'px';
-                    oChildDiv.style.top = aCells[i][j].blockX * CELL_WIDTH + 100 + 'px';
-                    oChildDiv.style.width = CELL_WIDTH + 'px';
-                    oChildDiv.style.height = CELL_WIDTH + 'px';
-                    oChildDiv.style.position = 'absolute';
-                    oChildDiv.style.border = 'black 1px solid';
-                    oChildDiv.style.textAlign = 'center';
-                    oChildDiv.style.lineHeight = CELL_WIDTH + 'px';
-                    oChildDiv.style.backgroundColor = aCells[i][j].backgroundColor;
+                // 初始格子的樣式
+                oChildDiv.style.left = iAlignLeft + aCells[i][j].blockY * CELL_WIDTH + 'px';
+                oChildDiv.style.top = aCells[i][j].blockX * CELL_WIDTH + 100 + 'px';
+                oChildDiv.style.width = CELL_WIDTH + 'px';
+                oChildDiv.style.height = CELL_WIDTH + 'px';
+                oChildDiv.style.position = 'absolute';
+                oChildDiv.style.border = 'black 1px solid';
+                oChildDiv.style.textAlign = 'center';
+                oChildDiv.style.lineHeight = CELL_WIDTH + 'px';
+                oChildDiv.style.backgroundColor = aCells[i][j].backgroundColor;
 
-                    oChildDiv.addEventListener('mouseup', ev => {
-                        if (!ev) ev = window.event;
+                oChildDiv.addEventListener('mouseup', ev => {
+                    if (!ev) ev = window.event;
 
-                        if (ev.button === 0) {
-                            if (timer === null) {
-                                startMove();
-                            }
-
-                            showCells(i, j);
-
-                            if (aCells[i][j].status !== -1) {
-                                isWin();
-                            }
+                    if (ev.button === 0) {
+                        if (timer === null) {
+                            startTime();
                         }
 
-                        if (ev.button === 2) {
-                            if (timer === null) {
-                                startMove();
-                            }
+                        showCells(i, j);
 
-                            if (aCells[i][j].status !== -1) {
-                                aCells[i][j].rightClick(() => {
-                                    oChildDiv.style.backgroundColor = aCells[i][j].backgroundColor;
-                                });
-
-                                isWin();
-                            }
+                        if (aCells[i][j].status !== -1) {
+                            isWin();
                         }
-                    });
+                    }
 
-                    oDiv.appendChild(oChildDiv);
-                }
-            }
+                    if (ev.button === 2) {
+                        if (timer === null) {
+                            startTime();
+                        }
+
+                        if (aCells[i][j].status !== -1) {
+                            aCells[i][j].rightClick(() => {
+                                oChildDiv.style.backgroundColor = aCells[i][j].backgroundColor;
+                            });
+
+                            isWin();
+                        }
+                    }
+                });
+
+                oDiv.appendChild(oChildDiv);
+            });
         }
 
-        function startMove() {
+        function startTime() {
             let oSpan = document.getElementById('spanTime');
             let passTime = 0;
 
@@ -441,6 +474,27 @@
                 passTime++;
                 oSpan.innerHTML = '時間(s)：' + passTime;
             }, 1000);
+        }
+
+        function autoSideBarMove(iTarget) {
+            let oDiv = document.getElementById('div2');
+
+            clearInterval(AutoSideBarTimer);
+            AutoSideBarTimer = setInterval(() => {
+                let speed = 0;
+
+                if (oDiv.offsetLeft > iTarget) {
+                    speed = -10;
+                } else {
+                    speed = 10;
+                }
+
+                if (oDiv.offsetLeft === iTarget) {
+                    clearInterval(AutoSideBarTimer);
+                } else {
+                    oDiv.style.left = oDiv.offsetLeft + speed + 'px';
+                }
+            }, 30);
         }
 
         window.onload = () => {
@@ -480,6 +534,17 @@
                     }
                 });
             }
+
+            // 左側遊戲說明自動彈出框
+            let oDiv2 = document.getElementById('div2');
+
+            let div2Left = window.getComputedStyle(oDiv2, null).getPropertyValue('left');
+
+            div2Left = parseInt(div2Left.substr(0, div2Left.length - 2));
+            console.log(div2Left);
+
+            oDiv2.onmouseover = () => autoSideBarMove(0);
+            oDiv2.onmouseout = () => autoSideBarMove(div2Left);
         };
     </script>
 </head>
@@ -494,5 +559,20 @@
 <hr/>
 
 <div id="div1"></div>
+
+<div id="div2">
+    左鍵點擊展開
+    <br/>
+    右鍵標記炸彈
+    <hr/>
+    初級有10顆炸彈
+    <br/>
+    中級有40顆炸彈
+    <br/>
+    高級有99顆炸彈
+    <hr/>
+    清除會重新開始本次賽局
+    <span>遊戲說明</span>
+</div>
 </body>
 </html>
