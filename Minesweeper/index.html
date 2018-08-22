@@ -541,7 +541,6 @@
             let div2Left = window.getComputedStyle(oDiv2, null).getPropertyValue('left');
 
             div2Left = parseInt(div2Left.substr(0, div2Left.length - 2));
-            console.log(div2Left);
 
             oDiv2.onmouseover = () => autoSideBarMove(0);
             oDiv2.onmouseout = () => autoSideBarMove(div2Left);
