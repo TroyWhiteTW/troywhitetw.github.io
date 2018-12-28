@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>歷史期數</title>
+    <link rel="stylesheet" type="text/css" href="Index.css">
+    <script src="Index.js"></script>
+</head>
+<body>
+<label>請輸入 JSON 資料：</label><br/>
+<textarea id="textareaInputJSON" cols="100" rows="25">
+{"148634618228":{"a":"PC端","b":"2017/04/11 16:21:48","c":"2017-04-11 16:26:13","d":"A","e":"192.95.1.1","f":"甲","g":"1001","h":"5,1,5,9,2","i":"雙面盤","j":"個","k":"大","l":"1.97","m":"10","n":"10","o":"0.00","p":"-10.00","q":"0.00","r":"-9.00","s":"10%","t":"-5.00"},"148634617228":{"a":"PC端","b":"2017/04/11 16:22:48","c":"2017-04-11 16:26:23","d":"B","e":"192.95.1.1","f":"甲","g":"1002","h":"5,1,5,9,2","i":"雙面盤","j":"個","k":"合","l":"1.97","m":"10","n":"10","o":"0.00","p":"-10.00","q":"0.00","r":"-9.00","s":"10%","t":"-5.00"},"148634616228":{"a":"PC端","b":"2017/04/11 16:23:48","c":"2017-04-11 16:26:33","d":"A","e":"192.95.1.1","f":"乙","g":"1001","h":"5,1,5,9,2","i":"雙面盤","j":"十","k":"小","l":"1.97","m":"10","n":"10","o":"0.00","p":"-10.00","q":"0.00","r":"-9.00","s":"10%","t":"-5.00"},"148634615228":{"a":"PC端","b":"2017/04/11 16:24:48","c":"2017-04-11 16:26:43","d":"B","e":"192.95.1.1","f":"乙","g":"1002","h":"5,1,5,9,2","i":"雙面盤","j":"百","k":"單","l":"1.97","m":"10","n":"10","o":"0.00","p":"9.70","q":"0.00","r":"8.73","s":"10%","t":"4.85"},"148634614228":{"a":"手機端","b":"2017/04/11 16:25:48","c":"2017-04-11 16:26:53","d":"A","e":"192.95.1.3","f":"丙","g":"1001","h":"5,1,5,9,2","i":"雙面盤","j":"千","k":"雙","l":"1.97","m":"10","n":"10","o":"0.00","p":"-10.00","q":"0.00","r":"-9.00","s":"10%","t":"-5.00"},"148634613228":{"a":"手機端","b":"2017/04/11 16:26:48","c":"2017-04-11 16:26:59","d":"B","e":"192.95.1.3","f":"丙","g":"1002","h":"5,1,5,9,2","i":"雙面盤","j":"個","k":"質","l":"1.97","m":"10","n":"10","o":"0.00","p":"9.70","q":"0.00","r":"8.73","s":"10%","t":"4.85"}}
+</textarea><br/>
+<input id="inputBtnReadJSON" type="button" value="讀取並顯示開獎結果"/><br/>
+點選-----結果-----文字會動態排序資料表內容，分別是 預設排序(綠底) 大到小(淺藍底) 小到大(淺紅底)
+<hr/>
+<table id="tableReport">
+    <tr>
+        <th class="tableHead" rowspan="2">時間</th>
+        <th class="tableHead" rowspan="2">單號</th>
+        <th class="tableHead" rowspan="2">內容</th>
+        <th class="tableHead" rowspan="2">金額</th>
+        <th class="tableHead" rowspan="2">有效金額</th>
+        <th class="tableHead" colspan="2">會員</th>
+        <th class="tableHead" colspan="2">代理商</th>
+        <th class="tableHead" rowspan="2">總公司<br/>結果</th>
+    </tr>
+    <tr>
+        <th class="tableHead">近</th>
+        <th id="tdResult" class="tableHead">結果</th>
+        <th class="tableHead">近</th>
+        <th class="tableHead">上交</th>
+    </tr>
+    <tr>
+        <td class="tableFooter">總計：</td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+        <td class="tableFooter"></td>
+    </tr>
+</table>
+</body>
+</html>

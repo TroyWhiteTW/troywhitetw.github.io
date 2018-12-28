@@ -1,0 +1,26 @@
+table {
+    width: 90%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px groove;
+}
+
+span {
+    height: 2em;
+    display: inline-flex;
+    align-items: center;
+}
+
+.tableHead {
+    height: 3em;
+    color: white;
+    background: darkgreen;
+}
+
+.tableFooter {
+    height: 2em;
+    background: #fff5ab;
+    text-align: right;
+}
