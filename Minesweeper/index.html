@@ -26,7 +26,6 @@
         }
     </style>
 
-    <script src="ajax.js"></script>
     <script>
         class Cells {
             constructor(x, y) {
@@ -70,26 +69,32 @@
         }
 
         const CELL_WIDTH = 30;
-
-        let columns = 0;
-        let rows = 0;
-        let bombs = 0;
-
+        let iColumns = 0;
+        let iRows = 0;
+        let iBombs = 0;
         let aBombs;
         let aCells;
-
         let timer = null;
         let AutoSideBarTimer = null;
+        const fStartTime = () => {
+            const oSpan = document.getElementById('spanTime');
+            let passTime = 0;
 
-        function createBombsArray(columns, rows, bombs) {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                passTime++;
+                oSpan.innerHTML = `時間(s)：${passTime}`;
+            }, 1000);
+        };
+        const fCreateBombsArray = (columns, rows, bombs) => {
             const ALL_CELLS = columns * rows;
-
             let originalArray = [];
             let returnArray = [bombs];
 
             for (let i = 0; i < ALL_CELLS; i++) {
                 originalArray[i] = i;
             }
+
             originalArray.sort(() => 0.5 - Math.random());
 
             for (let i = 0; i < bombs; i++) {
@@ -97,18 +102,16 @@
             }
 
             return returnArray;
-        }
-
-        function foreachAllCells(fCallback) {
+        };
+        const fForeachAllCells = fCallback => {
             for (let i = 0; i < aCells.length; i++) {
                 for (let j = 0; j < aCells[i].length; j++) {
                     fCallback(i, j);
                 }
             }
-        }
-
-        function countBombs() {
-            foreachAllCells((i, j) => {
+        };
+        const fCountBombs = () => {
+            fForeachAllCells((i, j) => {
                 let bombs = 0;
 
                 if (typeof aCells[i - 1] !== 'undefined') {
@@ -157,41 +160,39 @@
 
                 aCells[i][j].countBombs = bombs;
             });
-        }
-
-        function endGamePauseClick() {
-            foreachAllCells((i, j) => {
+        };
+        const fEndGamePauseClick = () => {
+            fForeachAllCells((i, j) => {
                 aCells[i][j].status = -1;
             });
 
-            let oDivs = document.getElementById('div1').getElementsByTagName('div');
+            const oDivs = document.getElementById('div1').getElementsByTagName('div');
 
             for (let i = 0; i < aBombs.length; i++) {
                 oDivs[aBombs[i]].style.backgroundColor = 'black';
             }
 
             clearInterval(timer);
-        }
-
-        function showCells(i, j) {
-            let oDivs = document.getElementById('div1').getElementsByTagName('div');
+        };
+        const fShowCells = (i, j) => {
+            const oDivs = document.getElementById('div1').getElementsByTagName('div');
 
             aCells[i][j].leftClick(
                 () => {
                     if (aCells[i][j].countBombs !== 0) {
-                        oDivs[i * columns + j].innerHTML = aCells[i][j].countBombs;
+                        oDivs[i * iColumns + j].innerHTML = aCells[i][j].countBombs;
                     }
-                    oDivs[i * columns + j].style.backgroundColor = aCells[i][j].backgroundColor;
+
+                    oDivs[i * iColumns + j].style.backgroundColor = aCells[i][j].backgroundColor;
                 },
                 () => {
                     alert('你踩到炸彈了！');
 
-                    endGamePauseClick();
+                    fEndGamePauseClick();
                 }
             );
 
             if (aCells[i][j].countBombs !== 0) {
-
                 if (aCells[i][j].status === 1) {
                     let tempBombs = 0;
 
@@ -251,44 +252,44 @@
                         if (typeof aCells[i - 1] !== 'undefined') {
                             if (typeof aCells[i - 1][j - 1] !== 'undefined' &&
                                 aCells[i - 1][j - 1].status === 0) {
-                                showCells(i - 1, j - 1);
+                                fShowCells(i - 1, j - 1);
                             }
 
                             if (typeof aCells[i - 1][j] !== 'undefined' &&
                                 aCells[i - 1][j].status === 0) {
-                                showCells(i - 1, j);
+                                fShowCells(i - 1, j);
                             }
 
                             if (typeof aCells[i - 1][j + 1] !== 'undefined' &&
                                 aCells[i - 1][j + 1].status === 0) {
-                                showCells(i - 1, j + 1);
+                                fShowCells(i - 1, j + 1);
                             }
                         }
 
                         if (typeof aCells[i][j - 1] !== 'undefined' &&
                             aCells[i][j - 1].status === 0) {
-                            showCells(i, j - 1);
+                            fShowCells(i, j - 1);
                         }
 
                         if (typeof aCells[i][j + 1] !== 'undefined' &&
                             aCells[i][j + 1].status === 0) {
-                            showCells(i, j + 1);
+                            fShowCells(i, j + 1);
                         }
 
                         if (typeof aCells[i + 1] !== 'undefined') {
                             if (typeof aCells[i + 1][j - 1] !== 'undefined' &&
                                 aCells[i + 1][j - 1].status === 0) {
-                                showCells(i + 1, j - 1);
+                                fShowCells(i + 1, j - 1);
                             }
 
                             if (typeof aCells[i + 1][j] !== 'undefined' &&
                                 aCells[i + 1][j].status === 0) {
-                                showCells(i + 1, j);
+                                fShowCells(i + 1, j);
                             }
 
                             if (typeof aCells[i + 1][j + 1] !== 'undefined' &&
                                 aCells[i + 1][j + 1].status === 0) {
-                                showCells(i + 1, j + 1);
+                                fShowCells(i + 1, j + 1);
                             }
                         }
                     }
@@ -297,53 +298,52 @@
                 if (typeof aCells[i - 1] !== 'undefined') {
                     if (typeof aCells[i - 1][j - 1] !== 'undefined' &&
                         aCells[i - 1][j - 1].status === 0) {
-                        showCells(i - 1, j - 1);
+                        fShowCells(i - 1, j - 1);
                     }
 
                     if (typeof aCells[i - 1][j] !== 'undefined' &&
                         aCells[i - 1][j].status === 0) {
-                        showCells(i - 1, j);
+                        fShowCells(i - 1, j);
                     }
 
                     if (typeof aCells[i - 1][j + 1] !== 'undefined' &&
                         aCells[i - 1][j + 1].status === 0) {
-                        showCells(i - 1, j + 1);
+                        fShowCells(i - 1, j + 1);
                     }
                 }
 
                 if (typeof aCells[i][j - 1] !== 'undefined' &&
                     aCells[i][j - 1].status === 0) {
-                    showCells(i, j - 1);
+                    fShowCells(i, j - 1);
                 }
 
                 if (typeof aCells[i][j + 1] !== 'undefined' &&
                     aCells[i][j + 1].status === 0) {
-                    showCells(i, j + 1);
+                    fShowCells(i, j + 1);
                 }
 
                 if (typeof aCells[i + 1] !== 'undefined') {
                     if (typeof aCells[i + 1][j - 1] !== 'undefined' &&
                         aCells[i + 1][j - 1].status === 0) {
-                        showCells(i + 1, j - 1);
+                        fShowCells(i + 1, j - 1);
                     }
 
                     if (typeof aCells[i + 1][j] !== 'undefined' &&
                         aCells[i + 1][j].status === 0) {
-                        showCells(i + 1, j);
+                        fShowCells(i + 1, j);
                     }
 
                     if (typeof aCells[i + 1][j + 1] !== 'undefined' &&
                         aCells[i + 1][j + 1].status === 0) {
-                        showCells(i + 1, j + 1);
+                        fShowCells(i + 1, j + 1);
                     }
                 }
             }
-        }
-
-        function isWin() {
+        };
+        const fIsWin = () => {
             let temp = 0;
 
-            foreachAllCells((i, j) => {
+            fForeachAllCells((i, j) => {
                 if (aCells[i][j].isBomb) {
                     if (aCells[i][j].tag === 1) {
                         temp++;
@@ -356,128 +356,94 @@
             });
 
             console.log(temp);
-            if (temp === columns * rows) {
+            if (temp === iColumns * iRows) {
                 alert('YOU WIN!!');
 
-                endGamePauseClick();
-
-                ajax(
-                    'GET',
-                    './test.php',
-                    {test: "test", troy: "troy"},
-                    response => {
-                        console.log(response);
-                        console.log('遊戲時間已記錄！');
-                    },
-                    status => {
-                        console.log(status);
-                        console.log('遊戲時間紀錄失敗！');
-                    }
-                );
+                fEndGamePauseClick();
             }
-        }
-
-        function initGame(startAndCleanBombs = true) {
+        };
+        const fInitGame = (bStartAndCleanBombs = true) => {
             // 建立炸彈陣列
-            if (startAndCleanBombs) {
-                aBombs = createBombsArray(columns, rows, bombs);
+            if (bStartAndCleanBombs) {
+                aBombs = fCreateBombsArray(iColumns, iRows, iBombs);
                 console.log(aBombs);
             }
 
             // 重置計時器
             clearInterval(timer);
             timer = null;
-            let oSpan = document.getElementById('spanTime');
-            oSpan.innerHTML = '時間(s)：0';
+            document.getElementById('spanTime').innerHTML = '時間(s)：0';
 
             // 建立格子陣列
             aCells = [];
-            for (let i = 0; i < rows; i++) {
+            for (let i = 0; i < iRows; i++) {
                 aCells[i] = [];
-                for (let j = 0; j < columns; j++) {
+
+                for (let j = 0; j < iColumns; j++) {
                     aCells[i].push(new Cells(i, j));
                 }
             }
 
             // 把炸彈放進格子裡
             for (let i = 0; i < aBombs.length; i++) {
-                let bombCell = aCells[Math.floor(aBombs[i] / columns)][aBombs[i] % columns];
+                const bombCell = aCells[Math.floor(aBombs[i] / iColumns)][aBombs[i] % iColumns];
+
                 bombCell.isBomb = true;
             }
 
             // 計算每一格附近有幾顆炸彈
-            countBombs();
+            fCountBombs();
 
             // 把遊戲畫上網頁
-            let oDiv = document.getElementById('div1');
+            const oDiv = document.getElementById('div1');
 
             oDiv.innerHTML = '';
-            oDiv.oncontextmenu = ev => false;
-            oDiv.onselectstart = ev => false;
+            oDiv.oncontextmenu = () => false;
+            oDiv.onselectstart = () => false;
 
-            let iAlignLeft = (window.innerWidth - (CELL_WIDTH * columns)) / 2;
+            const iAlignLeft = (window.innerWidth - (CELL_WIDTH * iColumns)) / 2;
 
-            foreachAllCells((i, j) => {
-                let oChildDiv = document.createElement('div');
+            fForeachAllCells((i, j) => {
+                const oChildDiv = document.createElement('div');
 
                 // 初始格子的樣式
-                oChildDiv.style.left = iAlignLeft + aCells[i][j].blockY * CELL_WIDTH + 'px';
-                oChildDiv.style.top = aCells[i][j].blockX * CELL_WIDTH + 100 + 'px';
-                oChildDiv.style.width = CELL_WIDTH + 'px';
-                oChildDiv.style.height = CELL_WIDTH + 'px';
+                oChildDiv.style.left = `${iAlignLeft + aCells[i][j].blockY * CELL_WIDTH}px`;
+                oChildDiv.style.top = `${aCells[i][j].blockX * CELL_WIDTH + 100}px`;
+                oChildDiv.style.width = `${CELL_WIDTH}px`;
+                oChildDiv.style.height = `${CELL_WIDTH}px`;
                 oChildDiv.style.position = 'absolute';
                 oChildDiv.style.border = 'black 1px solid';
                 oChildDiv.style.textAlign = 'center';
-                oChildDiv.style.lineHeight = CELL_WIDTH + 'px';
+                oChildDiv.style.lineHeight = `${CELL_WIDTH}px`;
                 oChildDiv.style.backgroundColor = aCells[i][j].backgroundColor;
 
                 oChildDiv.addEventListener('mouseup', ev => {
-                    if (!ev) ev = window.event;
-
                     if (ev.button === 0) {
-                        if (timer === null) {
-                            startTime();
-                        }
+                        if (timer === null) fStartTime();
 
-                        showCells(i, j);
+                        fShowCells(i, j);
 
-                        if (aCells[i][j].status !== -1) {
-                            isWin();
-                        }
+                        if (aCells[i][j].status !== -1) fIsWin();
                     }
 
                     if (ev.button === 2) {
-                        if (timer === null) {
-                            startTime();
-                        }
+                        if (timer === null) fStartTime();
 
                         if (aCells[i][j].status !== -1) {
                             aCells[i][j].rightClick(() => {
                                 oChildDiv.style.backgroundColor = aCells[i][j].backgroundColor;
                             });
 
-                            isWin();
+                            fIsWin();
                         }
                     }
                 });
 
                 oDiv.appendChild(oChildDiv);
             });
-        }
-
-        function startTime() {
-            let oSpan = document.getElementById('spanTime');
-            let passTime = 0;
-
-            clearInterval(timer);
-            timer = setInterval(() => {
-                passTime++;
-                oSpan.innerHTML = '時間(s)：' + passTime;
-            }, 1000);
-        }
-
-        function autoSideBarMove(iTarget) {
-            let oDiv = document.getElementById('div2');
+        };
+        const fAutoSideBarMove = iTarget => {
+            const oDiv = document.getElementById('div2');
 
             clearInterval(AutoSideBarTimer);
             AutoSideBarTimer = setInterval(() => {
@@ -492,43 +458,43 @@
                 if (oDiv.offsetLeft === iTarget) {
                     clearInterval(AutoSideBarTimer);
                 } else {
-                    oDiv.style.left = oDiv.offsetLeft + speed + 'px';
+                    oDiv.style.left = `${oDiv.offsetLeft + speed}px`;
                 }
             }, 30);
-        }
+        };
 
         window.onload = () => {
-            let oInput = document.getElementsByTagName('input');
+            const oInput = document.getElementsByTagName('input');
 
             for (let i = 0; i < oInput.length; i++) {
-                oInput[i].addEventListener('click', event => {
+                oInput[i].addEventListener('click', () => {
                     switch (oInput[i].id) {
                         case 'inputSimple':
-                            columns = 8;
-                            rows = 8;
-                            bombs = 10;
+                            iColumns = 8;
+                            iRows = 8;
+                            iBombs = 10;
 
-                            initGame(true);
+                            fInitGame(true);
 
                             break;
                         case 'inputMid':
-                            columns = 16;
-                            rows = 16;
-                            bombs = 40;
+                            iColumns = 16;
+                            iRows = 16;
+                            iBombs = 40;
 
-                            initGame(true);
+                            fInitGame(true);
 
                             break;
                         case 'inputHard':
-                            columns = 30;
-                            rows = 16;
-                            bombs = 99;
+                            iColumns = 30;
+                            iRows = 16;
+                            iBombs = 99;
 
-                            initGame(true);
+                            fInitGame(true);
 
                             break;
                         case 'inputClean':
-                            initGame(false);
+                            fInitGame(false);
 
                             break;
                     }
@@ -536,14 +502,13 @@
             }
 
             // 左側遊戲說明自動彈出框
-            let oDiv2 = document.getElementById('div2');
-
+            const oDiv2 = document.getElementById('div2');
             let div2Left = window.getComputedStyle(oDiv2, null).getPropertyValue('left');
 
-            div2Left = parseInt(div2Left.substr(0, div2Left.length - 2));
+            div2Left = Number.parseInt(div2Left.substr(0, div2Left.length - 2));
 
-            oDiv2.onmouseover = () => autoSideBarMove(0);
-            oDiv2.onmouseout = () => autoSideBarMove(div2Left);
+            oDiv2.onmouseover = () => fAutoSideBarMove(0);
+            oDiv2.onmouseout = () => fAutoSideBarMove(div2Left);
         };
     </script>
 </head>
