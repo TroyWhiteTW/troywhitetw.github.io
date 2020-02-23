@@ -1,15 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>troy work log</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        main > .container {
+            padding: 60px 15px 0;
+        }
+
+        .footer {
+            background-color: #f5f5f5;
+        }
+
+        .footer > .container {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        code {
+            font-size: 80%;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
     <script>
+        class WorkLog {
+            constructor(sWeekInfo, aDoneList, aTodoList) {
+                this.sWeekInfo = sWeekInfo;
+                this.aDoneList = aDoneList;
+                this.aTodoList = aTodoList;
+            }
+
+            getWeekInfo() {
+                return this.sWeekInfo;
+            }
+
+            getDoneList() {
+                return this.aDoneList;
+            }
+
+            getTodoList() {
+                return this.aTodoList;
+            }
+        }
+
+        const createNode = (sTagName, fSetTag = null) => {
+            const oNode = document.createElement(sTagName);
+
+            if (fSetTag) fSetTag(oNode);
+
+            return oNode;
+        };
+        const aData = [
+            new WorkLog(
+                '2/17~2/21',
+                [
+                    'helped to build site(dev.likesweetsbox.com).',
+                    'setting environment on new computer.',
+                    'tested and solved bloom android app building problem.',
+                    'built test site(dev.likesweetsbox.com).<br/>and solved redirect and certbot problem.',
+                ],
+                [
+                    '',
+                ]
+            ),
+        ];
+
         window.onload = () => {
-            
+            const oContent = document.getElementById('content');
+
+            for (let oItem of aData.values()) {
+                oContent.appendChild(createNode('hr'));
+
+                oContent.appendChild(createNode('div', oDiv => {
+                    oDiv.classList.add('row');
+
+                    oDiv.appendChild(createNode('div', oDiv1 => {
+                        oDiv1.classList.add('col');
+
+                        oDiv1.appendChild(createNode('h1', oH1 => {
+                            oH1.classList.add('text-center', 'text-monospace');
+                            oH1.innerText = oItem.getWeekInfo();
+                        }));
+                    }));
+                }));
+
+                oContent.appendChild(createNode('div', oDiv => {
+                    oDiv.classList.add('row');
+
+                    oDiv.appendChild(createNode('div', oDiv1 => {
+                        oDiv1.classList.add('col');
+
+                        oDiv1.appendChild(createNode('table', oTable => {
+                            oTable.classList.add('table', 'table-striped', 'table-bordered', 'text-center', 'text-monospace');
+
+                            oTable.appendChild(createNode('thead', oThead => {
+                                oThead.appendChild(createNode('tr', oTr => {
+                                    oTr.appendChild(createNode('th', oTh => {
+                                        oTh.scope = 'col';
+                                        oTh.innerText = 'done list';
+                                    }));
+                                }));
+                            }));
+
+                            oTable.appendChild(createNode('tbody', oTbody => {
+                                for (let sItem of oItem.getDoneList().values()) {
+                                    oTbody.appendChild(createNode('tr', oTr => {
+                                        oTr.appendChild(createNode('td', oTd => {
+                                            oTd.innerHTML = sItem;
+                                        }));
+                                    }));
+                                }
+                            }));
+                        }));
+                    }));
+
+                    oDiv.appendChild(createNode('div', oDiv1 => {
+                        oDiv1.classList.add('col');
+
+                        oDiv1.appendChild(createNode('table', oTable => {
+                            oTable.classList.add('table', 'table-striped', 'table-bordered', 'text-center', 'text-monospace');
+
+                            oTable.appendChild(createNode('thead', oThead => {
+                                oThead.appendChild(createNode('tr', oTr => {
+                                    oTr.appendChild(createNode('th', oTh => {
+                                        oTh.scope = 'col';
+                                        oTh.innerText = 'todo list';
+                                    }));
+                                }));
+                            }));
+
+                            oTable.appendChild(createNode('tbody', oTbody => {
+                                for (let sItem of oItem.getTodoList().values()) {
+                                    oTbody.appendChild(createNode('tr', oTr => {
+                                        oTr.appendChild(createNode('td', oTd => {
+                                            oTd.innerHTML = sItem;
+                                        }));
+                                    }));
+                                }
+                            }));
+                        }));
+                    }));
+                }));
+            }
         };
     </script>
 </head>
-<body>
+<body class="d-flex flex-column h-100">
+<header>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">troy work log</a>
+        <!--        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"-->
+        <!--                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">-->
+        <!--            <span class="navbar-toggler-icon"></span>-->
+        <!--        </button>-->
+        <!--        <div class="collapse navbar-collapse" id="navbarCollapse">-->
+        <!--            <ul class="navbar-nav mr-auto">-->
+        <!--                <li class="nav-item active">-->
+        <!--                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
+        <!--                </li>-->
+        <!--                <li class="nav-item">-->
+        <!--                    <a class="nav-link" href="#">Link</a>-->
+        <!--                </li>-->
+        <!--                <li class="nav-item">-->
+        <!--                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
+        <!--                </li>-->
+        <!--            </ul>-->
+        <!--            <form class="form-inline mt-2 mt-md-0">-->
+        <!--                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">-->
+        <!--                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+        <!--            </form>-->
+        <!--        </div>-->
+    </nav>
+</header>
 
+<!-- Begin page content -->
+<main role="main" class="flex-shrink-0">
+    <div class="container" id="content"></div>
+</main>
+
+<footer class="footer mt-auto py-3">
+    <div class="container">
+        <span class="text-muted text-monospace">如需 PDF 檔案可在頁面上點選右鍵 -> 列印 -> 另存為 PDF</span>
+    </div>
+</footer>
 </body>
 </html>
